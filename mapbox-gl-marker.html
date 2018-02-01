@@ -152,7 +152,12 @@ more details.
         },
         _arr: Object,
 
-        _attached: Boolean
+        _attached: Boolean,
+        
+        eventName: {
+          type: String,
+          value: ''
+        }
       };
     }
 
@@ -170,6 +175,7 @@ more details.
     disconnectedCallback() {
       super.disconnectedCallback();
       this._attached = false;
+      this._ele.removeEventListener('click');
       if (this.marker) {
         this.marker.remove();
       }
@@ -202,9 +208,28 @@ more details.
           ele.appendChild(children[i]);
         }
       }
+      
+      // Add the click event if it's present
+      if (this.eventName) {
+        ele.addEventListener('click', this._clickMarker);
+      }
 
       return ele;
 
+    }
+    
+    _clickMarker(evt) {
+      const node = this.firstElementChild.code;
+      const self = this;
+      if (node) {
+        const event = new CustomEvent(self.eventName, {
+          detail: {
+            node: node
+          }
+        });
+
+        window.dispatchEvent(event);
+      }
     }
 
     _createMarker(map, ele, offsetLeft, offsetTop) {
