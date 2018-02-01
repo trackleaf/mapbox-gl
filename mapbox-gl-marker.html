@@ -197,6 +197,7 @@ more details.
       var len = children.length;
       var className = ('mapbox-gl-marker '+this.className).trim();
       var ele;
+      var self = this;
       if (len == 0) {
         ele = document.createElement('div');
         ele.className = className;
@@ -211,7 +212,7 @@ more details.
       
       // Add the click event if it's present
       if (this.eventName) {
-        ele.addEventListener('click', this._clickMarker);
+        ele.addEventListener('click', this._clickMarker.bind(self));
       }
 
       return ele;
@@ -219,7 +220,7 @@ more details.
     }
     
     _clickMarker(evt) {
-      const node = this.firstElementChild.code;
+      const node = this._ele.firstElementChild.code;
       const self = this;
       if (node) {
         const event = new CustomEvent(self.eventName, {
